@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arcadia - La comunidad digital de la Comarca Andina</title>
+  <meta name="description" content="Arcadia conecta oficios, comercios y vecinos de la Comarca Andina. Encontra servicios, capacitate en oficios y accede a oportunidades de trabajo." />
+
+  <!-- Favicon SVG con triángulos entrelazados -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><polygon points='16,4 24,20 8,20' fill='%232d5a47'/><polygon points='10,8 18,24 2,24' fill='%231e4a5f' opacity='0.9'/><polygon points='22,8 30,24 14,24' fill='%230d9488' opacity='0.9'/></svg>">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Arcadia - Comunidad Digital de la Comarca Andina">
+  <meta property="og:description" content="Conectamos oficios, comercios y vecinos. Encontra servicios, capacitate y accede a trabajo.">
+  <meta property="og:type" content="website">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Paleta Bosque + Lago
+            primary: {
+              DEFAULT: '#3d7a5f',
+              dark: '#2d5a47',
+              light: '#e8f5e9',
+              50: '#e8f5e9'
+            },
+            secondary: {
+              DEFAULT: '#4a90a4',
+              dark: '#1e4a5f',
+              light: '#e3f2fd'
+            },
+            accent: {
+              DEFAULT: '#0d9488',
+              light: '#14b8a6',
+              dark: '#0f766e'
+            },
+            neutral: {
+              text: '#374151',
+              muted: '#6b7280',
+              bg: '#f3f4f6',
+              border: '#e5e7eb'
+            }
+          },
+          borderRadius: {
+            'btn': '6px',
+            'card': '8px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- AOS Animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+  <!-- Leaflet.js para mapas -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Google Fonts - Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #3d7a5f;
+      --primary-dark: #2d5a47;
+      --primary-light: #e8f5e9;
+      --secondary: #4a90a4;
+      --secondary-dark: #1e4a5f;
+      --secondary-light: #e3f2fd;
+      --accent: #0d9488;
+      --neutral-text: #374151;
+      --neutral-muted: #6b7280;
+      --neutral-bg: #f3f4f6;
+      --neutral-border: #e5e7eb;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--neutral-text);
+    }
+
+    h1, h2, h3, h4, h5, h6, .font-display {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ========================================
+       LOGO ARCADIA - Triángulos Entrelazados
+       ======================================== */
+    .logo-arcadia {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 8px;
+    }
+
+    .logo-arcadia svg {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-arcadia.logo-lg svg {
+      height: 40px;
+    }
+
+    .logo-arcadia .tri-1 { fill: var(--primary-dark); }
+    .logo-arcadia .tri-2 { fill: var(--secondary-dark); }
+    .logo-arcadia .tri-3 { fill: var(--accent); }
+
+    .logo-arcadia .logo-text {
+      fill: var(--neutral-text);
+      font-weight: 700;
+    }
+
+    .logo-arcadia:hover .tri-1,
+    .logo-arcadia:hover .tri-2,
+    .logo-arcadia:hover .tri-3 {
+      opacity: 0.85;
+    }
+
+    /* Logo versión clara (para fondos oscuros) */
+    .logo-arcadia-light .tri-1 { fill: #5a9a7f; }
+    .logo-arcadia-light .tri-2 { fill: #6ab0c4; }
+    .logo-arcadia-light .tri-3 { fill: #2dd4bf; }
+    .logo-arcadia-light .logo-text { fill: white; }
+
+    /* ========================================
+       SISTEMA DE BOTONES - Moderno/Tech
+       ======================================== */
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: #0f766e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-dark);
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border: 1.5px solid var(--primary-dark);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-dark);
+      color: white;
+    }
+
+    /* ========================================
+       CARDS - Sutil y Profesional
+       ======================================== */
+    .card {
+      background: white;
+      border: 1px solid var(--neutral-border);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Alias para compatibilidad */
+    .card-angular {
+      background: white;
+      border: 1px solid var(--neutral-border);
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .card-angular:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    /* ========================================
+       FONDOS Y GRADIENTES (más sutiles)
+       ======================================== */
+    .gradient-hero {
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+    }
+
+    .gradient-dark {
+      background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--primary-dark) 100%);
+    }
+
+    .gradient-accent {
+      background: var(--accent);
+    }
+
+    /* Texto con color accent */
+    .text-gradient {
+      color: var(--accent);
+    }
+
+    .text-gradient-warm {
+      color: var(--primary-dark);
+    }
+
+    /* ========================================
+       TAGS/BADGES
+       ======================================== */
+    .tag {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    /* Alias para compatibilidad */
+    .tag-angular {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    /* ========================================
+       LOADING SPINNER
+       ======================================== */
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--neutral-border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ========================================
+       SECCIONES
+       ======================================== */
+    .section-cut-top {
+      margin-top: 0;
+      padding-top: 4rem;
+    }
+
+    .section-cut-bottom {
+      padding-bottom: 4rem;
+    }
+
+    /* Glass effect para header */
+    .glass {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--neutral-border);
+    }
+
+    /* ========================================
+       INPUTS
+       ======================================== */
+    .input-modern {
+      border: 1px solid var(--neutral-border);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .input-modern:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+
+    /* Alias para compatibilidad */
+    .input-angular {
+      border: 1px solid var(--neutral-border);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .input-angular:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+    }
+
+    /* ========================================
+       COLORES DE TEXTO UTILITARIOS
+       ======================================== */
+    .text-primary { color: var(--primary); }
+    .text-accent { color: var(--accent); }
+    .text-warm { color: #d97706; }
+
+    /* ========================================
+       MAPA - Leaflet customizations
+       ======================================== */
+    #mapa-servicios {
+      height: 300px;
+      border-radius: 8px;
+      z-index: 1;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .leaflet-popup-content {
+      margin: 12px;
+    }
+
+    .marker-cluster {
+      background: var(--accent);
+      border-radius: 50%;
+      color: white;
+      font-weight: 600;
+    }
+
+    .ubicacion-actual {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--primary-light);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: var(--primary-dark);
+    }
+
+    .ubicacion-actual svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 glass">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#home" class="logo-arcadia">
+        <svg viewBox="0 0 140 32" xmlns="http://www.w3.org/2000/svg">
+          <!-- Icono: Tres triángulos entrelazados -->
+          <polygon class="tri-1" points="16,4 26,22 6,22"/>
+          <polygon class="tri-2" points="10,10 20,28 0,28" opacity="0.9"/>
+          <polygon class="tri-3" points="22,10 32,28 12,28" opacity="0.9"/>
+          <!-- Texto: Arcadia -->
+          <text class="logo-text" x="40" y="22" font-family="Inter, sans-serif" font-weight="700" font-size="18" letter-spacing="-0.3">Arcadia</text>
+        </svg>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+        <a href="#servicios" class="text-slate-600 hover:text-primary transition-colors relative group">
+          Servicios
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all"></span>
+        </a>
+        <a href="#comercios" class="text-slate-600 hover:text-primary transition-colors relative group">
+          Comercios
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all"></span>
+        </a>
+        <a href="#capacitaciones" class="text-slate-600 hover:text-primary transition-colors relative group">
+          Capacitaciones
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all"></span>
+        </a>
+        <a href="#trabajo" class="text-slate-600 hover:text-primary transition-colors relative group">
+          Trabajo
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all"></span>
+        </a>
+        <a href="#nosotros" class="text-slate-600 hover:text-primary transition-colors relative group">
+          Nosotros
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-primary to-accent group-hover:w-full transition-all"></span>
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#registro" class="btn-primary text-sm">
+          <span>Registrarme</span>
+        </a>
+
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-600 hover:text-primary">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white">
+      <nav class="flex flex-col p-4 space-y-1">
+        <a href="#servicios" class="py-3 px-3 hover:bg-primary-50 hover:text-primary transition-colors">Servicios</a>
+        <a href="#comercios" class="py-3 px-3 hover:bg-primary-50 hover:text-primary transition-colors">Comercios</a>
+        <a href="#capacitaciones" class="py-3 px-3 hover:bg-primary-50 hover:text-primary transition-colors">Capacitaciones</a>
+        <a href="#trabajo" class="py-3 px-3 hover:bg-primary-50 hover:text-primary transition-colors">Trabajo</a>
+        <a href="#nosotros" class="py-3 px-3 hover:bg-primary-50 hover:text-primary transition-colors">Nosotros</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Loading state -->
+    <div class="flex items-center justify-center min-h-[60vh]">
+      <div class="loader"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="gradient-dark text-white">
+    <div class="max-w-6xl mx-auto px-4 py-16">
+      <div class="grid md:grid-cols-4 gap-8 mb-8">
+        <!-- Brand -->
+        <div>
+          <a href="#home" class="logo-arcadia logo-arcadia-light logo-lg mb-4 inline-block">
+            <svg viewBox="0 0 140 32" xmlns="http://www.w3.org/2000/svg">
+              <polygon class="tri-1" points="16,4 26,22 6,22"/>
+              <polygon class="tri-2" points="10,10 20,28 0,28" opacity="0.9"/>
+              <polygon class="tri-3" points="22,10 32,28 12,28" opacity="0.9"/>
+              <text class="logo-text" x="40" y="22" font-family="Inter, sans-serif" font-weight="700" font-size="18" letter-spacing="-0.3">Arcadia</text>
+            </svg>
+          </a>
+          <p class="text-slate-400 text-sm leading-relaxed mt-4">
+            La comunidad digital de la Comarca Andina. Conectamos oficios, comercios y vecinos.
+          </p>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <h4 class="font-display font-semibold mb-4 text-teal-300">Plataforma</h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#servicios" class="hover:text-white transition-colors">Servicios</a></li>
+            <li><a href="#comercios" class="hover:text-white transition-colors">Comercios</a></li>
+            <li><a href="#capacitaciones" class="hover:text-white transition-colors">Capacitaciones</a></li>
+            <li><a href="#trabajo" class="hover:text-white transition-colors">Trabajo</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-semibold mb-4 text-teal-300">Sumate</h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li><a href="#registro/vecino" class="hover:text-white transition-colors">Como vecino</a></li>
+            <li><a href="#registro/prestador" class="hover:text-white transition-colors">Como prestador</a></li>
+            <li><a href="#registro/comercio" class="hover:text-white transition-colors">Como comercio</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-display font-semibold mb-4 text-teal-300">Contacto</h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li>hola@arcadia.com.ar</li>
+            <li>El Bolson, Rio Negro</li>
+            <li>Comarca Andina</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+        <p>&copy; <span id="year">2026</span> Arcadia. Soberania digital para la economia local.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Terminos</a>
+          <a href="#" class="hover:text-white transition-colors">Privacidad</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+    }
+  </script>
+</body>
+</html>
